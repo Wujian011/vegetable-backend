@@ -52,7 +52,7 @@ public class ClassificationController {
     }
 
     /**
-     * 根据 id 获取用户（仅管理员）
+     * 根据 id 获取菜品分类（仅管理员）
      */
     @GetMapping("/get")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -74,7 +74,7 @@ public class ClassificationController {
     }
 
     /**
-     * 删除用户
+     * 删除菜品分类
      */
     @PostMapping("/delete")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -87,7 +87,7 @@ public class ClassificationController {
     }
 
     /**
-     * 更新用户
+     * 更新菜品分类
      */
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
@@ -103,7 +103,7 @@ public class ClassificationController {
     }
 
     /**
-     * 分页获取用户封装列表（仅管理员）
+     * 分页获取菜品分类封装列表（仅管理员）
      *
      * @param classificationQueryRequest 查询请求参数
      */
