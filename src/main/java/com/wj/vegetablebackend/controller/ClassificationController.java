@@ -14,8 +14,11 @@ import com.wj.vegetablebackend.model.dto.classification.ClassificationAddRequest
 import com.wj.vegetablebackend.model.dto.classification.ClassificationQueryRequest;
 import com.wj.vegetablebackend.model.dto.classification.ClassificationUpdateRequest;
 import com.wj.vegetablebackend.model.entity.Classification;
+import com.wj.vegetablebackend.model.entity.User;
 import com.wj.vegetablebackend.model.vo.ClassificationVO;
+import com.wj.vegetablebackend.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,15 +40,32 @@ public class ClassificationController {
     @Resource
     private ClassificationService classificationService;
 
+    @Resource
+    private UserService userService;
+
+    /**
+     * 获取所有分类
+     * @return
+     */
+    @GetMapping("/getClassificationItem")
+    public BaseResponse<List<Classification>> getClassificationItem() {
+        List<Classification> classificationList = classificationService.list();
+
+        return ResultUtils.success(classificationList);
+    }
+
+
     /**
      * 创建菜品分类
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addClassification(@RequestBody ClassificationAddRequest classificationAddRequest) {
+    public BaseResponse<Long> addClassification(@RequestBody ClassificationAddRequest classificationAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(classificationAddRequest == null, ErrorCode.PARAMS_ERROR);
         Classification classification = new Classification();
         BeanUtil.copyProperties(classificationAddRequest, classification);
-
+        User loginUser = userService.getLoginUser(request);
+        Long userId= loginUser.getId();
+        classification.setUserId(userId);
         boolean result = classificationService.save(classification);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(classification.getId());

@@ -4,6 +4,7 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -44,6 +45,12 @@ public class Classification implements Serializable {
      * 分类代码
      */
     private String code;
+
+    /**
+     * 创建用户
+     */
+    @Column("userId")
+    private Long userId;
 
     /**
      * 编辑时间

@@ -25,8 +25,4 @@ public class ClassificationAddRequest implements Serializable {
      */
     private String code;
 
-    /**
-     * 创建用户id
-     */
-    private Long userId;
 }
