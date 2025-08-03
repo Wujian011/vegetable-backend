@@ -67,19 +67,20 @@ create table if not exists shopping_cart
 -- 订单
 create table if not exists orders
 (
-    id         bigint auto_increment comment 'id' primary key,
-    dishesId   bigint                             not null comment '菜品Id',
-    price      decimal(10, 2)                     not null comment '价格',
-    userId     bigint                             not null comment '创建用户id',
-    editTime   datetime default CURRENT_TIMESTAMP not null comment '编辑时间',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除'
+    id          bigint auto_increment comment 'id' primary key,
+    orderNumber varchar(256)                       not null comment '订单编号',
+    price       decimal(10, 2)                     not null comment '价格',
+    userId      bigint                             not null comment '创建用户id',
+    editTime    datetime default CURRENT_TIMESTAMP not null comment '编辑时间',
+    createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete    tinyint  default 0                 not null comment '是否删除'
 ) comment '订单' collate = utf8mb4_unicode_ci;
 
 create table if not exists `order_details`
 (
     id         bigint auto_increment comment 'id' primary key,
+    orderId    bigint                             not null comment '订单Id',
     dishesId   bigint                             not null comment '菜品Id',
     price      decimal(10, 2)                     not null comment '价格（当时价格）',
     number     integer                            not null comment '数量',
