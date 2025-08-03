@@ -39,11 +39,14 @@ public class DishesServiceImpl extends ServiceImpl<DishesMapper, Dishes> impleme
         String name = dishesQueryRequest.getName();
         BigDecimal price = dishesQueryRequest.getPrice();
         String material = dishesQueryRequest.getMaterial();
+        Long classificationId = dishesQueryRequest.getClassificationId();
         String sortField = dishesQueryRequest.getSortField();
         String sortOrder = dishesQueryRequest.getSortOrder();
         return QueryWrapper.create()
                 .eq("id", id) // where id = ${id}
+                .eq("classificationId", classificationId)
                 .eq("price", price)
+                .like("name", name)
                 .like("material", material)
                 .orderBy(sortField, "ascend".equals(sortOrder));
     }

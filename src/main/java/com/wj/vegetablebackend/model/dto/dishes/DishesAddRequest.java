@@ -16,6 +16,10 @@ public class DishesAddRequest implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
+    /**
+     * 菜谱分类id
+     */
+    private Long classificationId;
 
     /**
      * 菜品名称
@@ -32,8 +36,5 @@ public class DishesAddRequest implements Serializable {
      */
     private String material;
 
-    /**
-     * 用户id
-     */
-    private Long userId;
+
 }

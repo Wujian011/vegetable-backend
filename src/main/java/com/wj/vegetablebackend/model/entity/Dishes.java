@@ -38,6 +38,12 @@ public class Dishes implements Serializable {
     private Long id;
 
     /**
+     * 菜谱分类id
+     */
+    @Column("classificationId")
+    private Long classificationId;
+
+    /**
      * 菜品名称
      */
     private String name;
@@ -55,6 +61,7 @@ public class Dishes implements Serializable {
     /**
      * 用户id
      */
+    @Column("userId")
     private Long userId;
 
     /**

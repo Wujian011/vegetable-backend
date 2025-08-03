@@ -18,6 +18,11 @@ public class DishesUpdateRequest implements Serializable {
     private Long id;
 
     /**
+     * 菜谱分类id
+     */
+    private Long classificationId;
+
+    /**
      * 菜品名称
      */
     private String name;

@@ -14,8 +14,11 @@ import com.wj.vegetablebackend.model.dto.dishes.DishesAddRequest;
 import com.wj.vegetablebackend.model.dto.dishes.DishesQueryRequest;
 import com.wj.vegetablebackend.model.dto.dishes.DishesUpdateRequest;
 import com.wj.vegetablebackend.model.entity.Dishes;
+import com.wj.vegetablebackend.model.entity.User;
 import com.wj.vegetablebackend.model.vo.DishesVO;
+import com.wj.vegetablebackend.service.UserService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,15 +39,20 @@ public class DishesController {
     @Resource
     private DishesService dishesService;
 
+    @Resource
+    private UserService userService;
+
     /**
      * 创建菜品
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addDishes(@RequestBody DishesAddRequest dishesAddRequest) {
+    public BaseResponse<Long> addDishes(@RequestBody DishesAddRequest dishesAddRequest, HttpServletRequest request) {
         ThrowUtils.throwIf(dishesAddRequest == null, ErrorCode.PARAMS_ERROR);
         Dishes dishes = new Dishes();
         BeanUtil.copyProperties(dishesAddRequest, dishes);
-
+        User loginUser = userService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        dishes.setUserId(userId);
         boolean result = dishesService.save(dishes);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(dishes.getId());
@@ -108,7 +116,7 @@ public class DishesController {
      * @param dishesQueryRequest 查询请求参数
      */
     @PostMapping("/list/page/vo")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
+//    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<DishesVO>> listDishesVOByPage(@RequestBody DishesQueryRequest dishesQueryRequest) {
         ThrowUtils.throwIf(dishesQueryRequest == null, ErrorCode.PARAMS_ERROR);
         long pageNum = dishesQueryRequest.getPageNum();

@@ -39,15 +39,16 @@ create table if not exists classification
 -- 菜品
 create table if not exists dishes
 (
-    id         bigint auto_increment comment 'id' primary key,
-    name       varchar(256)                       not null comment '菜品名称',
-    price      decimal(10, 2)                     not null comment '价格',
-    material   text                               not null comment '材料',
-    userId     bigint                             not null comment '创建用户id',
-    editTime   datetime default CURRENT_TIMESTAMP not null comment '编辑时间',
-    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete   tinyint  default 0                 not null comment '是否删除'
+    id               bigint auto_increment comment 'id' primary key,
+    classificationId bigint                             not null comment '菜品分类',
+    name             varchar(256)                       not null comment '菜品名称',
+    price            decimal(10, 2)                     not null comment '价格',
+    material         text                               not null comment '材料',
+    userId           bigint                             not null comment '创建用户id',
+    editTime         datetime default CURRENT_TIMESTAMP not null comment '编辑时间',
+    createTime       datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete         tinyint  default 0                 not null comment '是否删除'
 ) comment '菜品' collate = utf8mb4_unicode_ci;
 
 -- 购物车
@@ -64,7 +65,7 @@ create table if not exists shopping_cart
 ) comment '购物车' collate = utf8mb4_unicode_ci;
 
 -- 订单
-create table if not exists `order`
+create table if not exists orders
 (
     id         bigint auto_increment comment 'id' primary key,
     dishesId   bigint                             not null comment '菜品Id',
