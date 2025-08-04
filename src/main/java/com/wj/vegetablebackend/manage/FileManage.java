@@ -3,6 +3,7 @@ package com.wj.vegetablebackend.manage;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.wj.vegetablebackend.exception.BusinessException;
 import com.wj.vegetablebackend.exception.ErrorCode;
 import io.minio.GetPresignedObjectUrlArgs;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
@@ -23,6 +25,9 @@ import java.time.LocalDateTime;
 public class FileManage {
     @Value("${minio.bucket}")
     private String bucketName;
+
+    @Value("${minio.url}")
+    private String url;
 
     @Resource
     private MinioClient minioClient;
@@ -58,8 +63,8 @@ public class FileManage {
                     .method(Method.GET)
                     .build();
 
-            fileUrl = minioClient.getPresignedObjectUrl(getPresignedObjectUrlArgs);
-            fileUrl = fileUrl.substring(0, fileUrl.indexOf("?"));
+            //  minioClient.getPresignedObjectUrl(getPresignedObjectUrlArgs);
+            fileUrl = url + File.separator + fileName;
             return fileUrl;
         } catch (Exception e) {
             log.error("上传文件失败：{}", e.getMessage());

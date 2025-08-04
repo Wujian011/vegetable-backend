@@ -36,5 +36,10 @@ public class DishesAddRequest implements Serializable {
      */
     private String material;
 
+    /**
+     * 菜品图片
+     */
+    private String dishesImage;
+
 
 }

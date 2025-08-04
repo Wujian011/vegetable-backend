@@ -59,6 +59,12 @@ public class Dishes implements Serializable {
     private String material;
 
     /**
+     * 菜品图片
+     */
+    @Column("dishesImage")
+    private String dishesImage;
+
+    /**
      * 用户id
      */
     @Column("userId")

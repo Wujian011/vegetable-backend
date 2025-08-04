@@ -90,3 +90,7 @@ create table if not exists `order_details`
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     isDelete   tinyint  default 0                 not null comment '是否删除'
 ) comment '订单详情' collate = utf8mb4_unicode_ci;
+
+-- 菜品表添加图片字段
+alter table dishes
+    add column dishesImage varchar(1024) null comment '菜品图片';

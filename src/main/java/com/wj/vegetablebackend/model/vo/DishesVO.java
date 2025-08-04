@@ -39,6 +39,11 @@ public class DishesVO implements Serializable {
     private String material;
 
     /**
+     * 菜品图片
+     */
+    private String dishesImage;
+
+    /**
      * 用户id
      */
     private Long userId;
