@@ -1,6 +1,7 @@
 package com.wj.vegetablebackend.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.wj.vegetablebackend.annotation.AuthCheck;
 import com.wj.vegetablebackend.common.BaseResponse;
@@ -24,6 +25,7 @@ import com.wj.vegetablebackend.service.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 用户 控制层。
@@ -141,6 +143,26 @@ public class UserController {
         return ResultUtils.success(b);
     }
 
+    /**
+     * 编辑用户
+     */
+    @PostMapping("/edite")
+    public BaseResponse<Boolean> editeUser(@RequestBody UserEditeRequest userEditeRequest,HttpServletRequest request) {
+        if (userEditeRequest == null || userEditeRequest.getId() == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        Long loginUserId = loginUser.getId();
+        Long userId = userEditeRequest.getId();
+        if (ObjectUtil.notEqual(userId, loginUserId)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "只能编辑自己的信息");
+        }
+        User user = new User();
+        BeanUtil.copyProperties(userEditeRequest, user);
+        boolean result = userService.updateById(user);
+        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        return ResultUtils.success(true);
+    }
     /**
      * 更新用户
      */

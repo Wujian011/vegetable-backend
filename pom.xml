@@ -30,6 +30,13 @@
         <java.version>21</java.version>
     </properties>
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.minio/minio -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.17</version>
+        </dependency>
+
         <!--    接口文档：https://doc.xiaominfo.com/docs/quick-start    -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

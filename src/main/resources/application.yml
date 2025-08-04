@@ -31,3 +31,10 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+# 对象存储
+minio:
+  host: http://127.0.0.1:9000
+  url: ${minio.host}/${minio.bucket}/
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: public
