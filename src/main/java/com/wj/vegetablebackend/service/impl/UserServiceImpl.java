@@ -2,20 +2,29 @@ package com.wj.vegetablebackend.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.wj.vegetablebackend.exception.BusinessException;
 import com.wj.vegetablebackend.exception.ErrorCode;
+import com.wj.vegetablebackend.exception.ThrowUtils;
+import com.wj.vegetablebackend.model.dto.user.JoinFamilyRequest;
 import com.wj.vegetablebackend.model.dto.user.UserQueryRequest;
 import com.wj.vegetablebackend.model.entity.User;
 import com.wj.vegetablebackend.mapper.UserMapper;
+import com.wj.vegetablebackend.model.enums.CoupleRoleEnum;
 import com.wj.vegetablebackend.model.enums.UserRoleEnum;
 import com.wj.vegetablebackend.model.vo.LoginUserVO;
 import com.wj.vegetablebackend.model.vo.UserVO;
 import com.wj.vegetablebackend.service.UserService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -31,7 +40,11 @@ import static com.wj.vegetablebackend.constant.UserConstant.USER_LOGIN_STATE;
  * @author wj
  */
 @Service
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    @Resource
+    private PlatformTransactionManager transactionManager;
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -75,8 +88,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) {
             return null;
         }
+        Long partnerId = user.getPartnerId();
+        LoginUserVO partnerUserVO = null;
+        if (partnerId != null) {
+            User partnerUser = this.getById(partnerId);
+            partnerUserVO = new LoginUserVO();
+            BeanUtil.copyProperties(partnerUser, partnerUserVO);
+        }
+
         LoginUserVO loginUserVO = new LoginUserVO();
         BeanUtil.copyProperties(user, loginUserVO);
+        loginUserVO.setPartnerUser(partnerUserVO);
         return loginUserVO;
     }
 
@@ -183,5 +205,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 盐值，混淆密码
         final String SALT = "wj";
         return DigestUtils.md5DigestAsHex((userPassword + SALT).getBytes(StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public Boolean joinFamily(JoinFamilyRequest joinFamilyRequest, HttpServletRequest request) {
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+        try {
+            Long userId = joinFamilyRequest.getUserId();
+            String coupleRole = joinFamilyRequest.getCoupleRole();
+
+            ThrowUtils.throwIf(StrUtil.isBlank(coupleRole), ErrorCode.PARAMS_ERROR, "请选择您的角色");
+
+
+            User loginUser = this.getLoginUser(request);
+            User user = this.getById(userId);
+            if (user == null) {
+                throw new BusinessException(ErrorCode.NOT_FOUND_ERROR, "邀请码已失效");
+            }
+            // 被邀请人绑定
+            loginUser.setPartnerId(userId);
+            CoupleRoleEnum enumByValue = CoupleRoleEnum.getEnumByValue(coupleRole);
+            ThrowUtils.throwIf(enumByValue == null, ErrorCode.PARAMS_ERROR, "请选择您的角色");
+
+            loginUser.setCoupleRole(enumByValue.getValue());
+            loginUser.setCoupleRoleSetTime(DateTime.now().toLocalDateTime());
+            loginUser.setPartnerBindTime(DateTime.now().toLocalDateTime());
+            boolean updateLoginUser = this.updateById(loginUser);
+            ThrowUtils.throwIf(!updateLoginUser, ErrorCode.OPERATION_ERROR);
+
+            // 更新邀请人绑定
+            user.setPartnerId(loginUser.getId());
+            // 选择另一个角色
+            if (CoupleRoleEnum.FEEDER.equals(enumByValue)) {
+                user.setCoupleRole(CoupleRoleEnum.FOODIE.getValue());
+            } else {
+                user.setCoupleRole(CoupleRoleEnum.FEEDER.getValue());
+            }
+            user.setCoupleRoleSetTime(DateTime.now().toLocalDateTime());
+            boolean updateUser = this.updateById(user);
+            ThrowUtils.throwIf(!updateUser, ErrorCode.OPERATION_ERROR);
+            transactionManager.commit(status);
+            return true;
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            log.error("加入家庭失败", e);
+            return false;
+
+        }
+
+
     }
 }

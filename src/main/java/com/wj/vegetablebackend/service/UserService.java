@@ -2,6 +2,7 @@ package com.wj.vegetablebackend.service;
 
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
+import com.wj.vegetablebackend.model.dto.user.JoinFamilyRequest;
 import com.wj.vegetablebackend.model.dto.user.UserQueryRequest;
 import com.wj.vegetablebackend.model.entity.User;
 import com.wj.vegetablebackend.model.vo.LoginUserVO;
@@ -91,4 +92,13 @@ public interface UserService extends IService<User> {
      * @return 加密后的用户密码
      */
     String getEncryptPassword(String userPassword);
+
+    /**
+     * 加入 家庭
+     *
+     * @param joinFamilyRequest
+     * @param request
+     * @return
+     */
+    Boolean joinFamily(JoinFamilyRequest joinFamilyRequest, HttpServletRequest request);
 }

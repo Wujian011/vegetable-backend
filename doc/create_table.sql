@@ -94,3 +94,13 @@ create table if not exists `order_details`
 -- 菜品表添加图片字段
 alter table dishes
     add column dishesImage varchar(1024) null comment '菜品图片';
+
+-- 用户表添加绑定关系字段，和情侣角色字段
+alter table user
+    add column partnerId         bigint       null comment '情侣id',
+    add column partnerBindTime   datetime     null comment '绑定时间',
+    add column inviteCode        varchar(256) null comment '个人邀请码（用于被邀请绑定）',
+    add column coupleRole        varchar(256) null default 'feeder' comment 'feeder(饲养员)/foodie(吃货)',
+    add column coupleRoleSetTime datetime     null on update CURRENT_TIMESTAMP comment '角色设定时间';
+
+

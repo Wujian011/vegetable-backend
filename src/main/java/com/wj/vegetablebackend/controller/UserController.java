@@ -16,16 +16,11 @@ import com.wj.vegetablebackend.model.vo.LoginUserVO;
 import com.wj.vegetablebackend.model.vo.UserVO;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.wj.vegetablebackend.model.entity.User;
 import com.wj.vegetablebackend.service.UserService;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 用户 控制层。
@@ -38,6 +33,23 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+
+    /**
+     * 加入家庭
+     *
+     * @param joinFamilyRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/join/family")
+    public BaseResponse<Boolean> joinFamily(@RequestBody JoinFamilyRequest joinFamilyRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(joinFamilyRequest == null, ErrorCode.PARAMS_ERROR);
+        return ResultUtils.success(userService.joinFamily(joinFamilyRequest, request));
+    }
+
+
+
 
     /**
      * 用户注册
@@ -147,7 +159,7 @@ public class UserController {
      * 编辑用户
      */
     @PostMapping("/edite")
-    public BaseResponse<Boolean> editeUser(@RequestBody UserEditeRequest userEditeRequest,HttpServletRequest request) {
+    public BaseResponse<Boolean> editeUser(@RequestBody UserEditeRequest userEditeRequest, HttpServletRequest request) {
         if (userEditeRequest == null || userEditeRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -163,6 +175,7 @@ public class UserController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
+
     /**
      * 更新用户
      */

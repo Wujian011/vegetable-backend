@@ -1,5 +1,6 @@
 package com.wj.vegetablebackend.model.dto.user;
 
+import com.mybatisflex.annotation.Column;
 import lombok.Data;
 
 import java.io.Serial;
@@ -32,9 +33,9 @@ public class UserEditeRequest implements Serializable {
     private String userProfile;
 
     /**
-     * 用户角色：user/admin
+     * feeder(饲养员)/foodie(吃货)
      */
-    private String userRole;
+    private String coupleRole;
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -95,4 +95,34 @@ public class User implements Serializable {
     @Column(value = "isDelete", isLogicDelete = true)
     private Integer isDelete;
 
+    /**
+     * 情侣id
+     */
+    @Column("partnerId")
+    private Long partnerId;
+
+    /**
+     * 绑定时间
+     */
+    @Column("partnerBindTime")
+    private LocalDateTime partnerBindTime;
+
+    /**
+     * 个人邀请码（用于被邀请绑定）
+     */
+    @Column("inviteCode")
+    private String inviteCode;
+
+    /**
+     * feeder(饲养员)/foodie(吃货)
+     */
+    @Column("coupleRole")
+    private String coupleRole;
+
+    /**
+     * 角色设定时间
+     */
+    @Column("coupleRoleSetTime")
+    private LocalDateTime coupleRoleSetTime;
+
 }

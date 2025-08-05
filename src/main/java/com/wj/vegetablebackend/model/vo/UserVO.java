@@ -1,9 +1,11 @@
 package com.wj.vegetablebackend.model.vo;
 
+import com.mybatisflex.annotation.Column;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 脱敏后的用户信息
@@ -15,7 +17,7 @@ public class UserVO implements Serializable {
      * id
      */
     private Long id;
-    
+
     /**
      * 账号
      */
@@ -45,6 +47,33 @@ public class UserVO implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
+
+    /**
+     * 情侣id
+     */
+    private Long partnerId;
+
+    /**
+     * 伴侣姓名
+     */
+    private String partnerName;
+
+    /**
+     * 伴侣头像
+     */
+    private String partnerAvatar;
+
+    /**
+     * 绑定时间
+     */
+    private Date partnerBindTime;
+
+    /**
+     * 是否已绑定
+     */
+    private Boolean hasPartner;
+
 
     private static final long serialVersionUID = 1L;
 }
